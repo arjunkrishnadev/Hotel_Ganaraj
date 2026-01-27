@@ -1,0 +1,93 @@
+{% load static %}
+{% include 'header.html' %}
+
+<!-- FOOD SECTION -->
+<section class="food_section layout_padding">
+  <div class="container">
+
+    <!-- Heading -->
+    <div class="heading_container heading_center">
+      <h2>Our Menu</h2>
+    </div>
+
+    <!-- Search Form -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-6">
+        <form action="" method="GET" class="d-flex">
+          <input type="text" name="q" class="form-control" placeholder="Search for dishes..." value="{{ search_query }}" style="border-radius: 30px 0 0 30px; height: 50px; border: none; padding-left: 25px;">
+          <button type="submit" class="btn" style="background: #ffbe33; border-radius: 0 30px 30px 0; padding: 0 30px; color: #000; font-weight: bold;">
+            <i class="fa fa-search"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Category Filters -->
+    <ul class="filters_menu">
+      <li class="{% if active_category == 'all' %}active{% endif %}">
+        <a href="?category=all{% if search_query %}&q={{ search_query }}{% endif %}" style="color: inherit; text-decoration: none;">All</a>
+      </li>
+      {% for category in categories %}
+        <li class="{% if active_category == category.slug %}active{% endif %}">
+          <a href="?category={{ category.slug }}{% if search_query %}&q={{ search_query }}{% endif %}" style="color: inherit; text-decoration: none;">{{ category.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <!-- Menu Grid -->
+    <div class="filters-content">
+      <div class="row grid">
+
+        {% for product in products %}
+        <div class="col-sm-6 col-lg-4 all {{ product.category.slug }}">
+          <div class="box">
+            <div>
+
+              <!-- Image -->
+              <div class="img-box">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+              </div>
+
+              <!-- Text Content -->
+              <div class="detail-box">
+                {% if product.offer_tag %}
+              <div class="offer-badge {{ product.offer_tag }}">
+                {{ product.offer_text|default:product.get_offer_tag_display }}
+              </div>
+                {% endif %}
+
+                <h5>{{ product.name }}</h5>
+
+                {% if product.description %}
+                  <p>{{ product.description }}</p>
+                {% else %}
+                  <p>No description available.</p>
+                {% endif %}
+
+                <!-- Price + Add to Cart -->
+                <div class="options">
+                  <h6>{{ product.price }}rs</h6>
+
+                  <div class="mini-cart-floating update-cart"
+                    data-product="{{ product.id }}"
+                    data-action="add">
+                    <i class="fa fa-shopping-cart"></i>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- END FOOD SECTION -->
+
+{% include 'footer.html' %}
+<script src="{% static 'js/cart.js' %}"></script>

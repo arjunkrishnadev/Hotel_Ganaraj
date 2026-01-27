@@ -1,0 +1,66 @@
+{% load static %}
+{% include 'header.html' %}
+
+
+<section class="order_section layout_padding">
+    <div class="container">
+
+        <div class="heading_container heading_center">
+            <h2 class="order_title">
+                <span class="order_icon">🧾</span> Your Orders
+            </h2>
+        </div>
+
+        <div class="order_card">
+
+            <a class="back_btn" href="{% url 'menu' %}">
+                ← Back to Menu
+            </a>
+
+            <table class="table order_table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.date_ordered }}</td>
+                        <td>{{ order.get_cart_items }}</td>
+                        <td>{{ order.get_cart_total }} rs</td>
+
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                {% if order.status == 'Placed' %}
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Placed</div>
+                                {% elif order.status == 'Preparing' %}
+                                    <div class="progress-bar bg-warning text-dark" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">Preparing</div>
+                                {% elif order.status == 'Out for Delivery' %}
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">On Way</div>
+                                {% elif order.status == 'Delivered' %}
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Delivered</div>
+                                {% elif order.status == 'Cancelled' %}
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Cancelled</div>
+                                {% else %}
+                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Pending</div>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}

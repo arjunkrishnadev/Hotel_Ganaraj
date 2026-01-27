@@ -1,0 +1,46 @@
+{% load static %}
+{% include 'header.html' %}
+<section class="register_section">
+  <div class="register_bg"></div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      
+      <div class="col-md-6">
+        <div class="register_card">
+
+          <div class="register_logo">
+            <span>Ganaraj</span>
+          </div>
+
+          <h3 class="register_title">Create an Account</h3>
+          <p class="register_subtitle">Join us for an unforgettable dining experience</p>
+
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group mb-3">
+              <label class="register_label">Username</label>
+              <input type="text" name="username" class="form-control register_input" placeholder="Choose a username" required>
+            </div>
+            <div class="form-group mb-3">
+              <label class="register_label">Email</label>
+              <input type="email" name="email" class="form-control register_input" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group mb-3">
+              <label class="register_label">Password</label>
+              <input type="password" name="password1" class="form-control register_input" placeholder="Create a password" required>
+            </div>
+            <div class="form-group mb-3">
+              <label class="register_label">Confirm Password</label>
+              <input type="password" name="password2" class="form-control register_input" placeholder="Confirm your password" required>
+            </div>
+        </div>
+        </form>
+
+            <button type="submit" class="register_btn">Register</button>
+
+            <p class="register_login mt-3">
+              Already have an account? <a href="{% url 'login' %}">Login here</a>
+            </p>    
+            {% include 'footer.html' %}

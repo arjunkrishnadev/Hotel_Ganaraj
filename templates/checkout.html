@@ -1,0 +1,108 @@
+{% load static %}
+{% include 'header.html' %}
+
+<section class="checkout_section layout_padding">
+    <div class="container">
+        <div class="heading_container heading_center">
+            <h2>
+                Checkout
+            </h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="glass_card">
+                    <h4 class="mb-4" style="color: #ffbe33;">Order Summary</h4>
+                    
+                    <div class="table-responsive">
+                        <table class="table text-white">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>
+                                        {% if item.discounted_price %}
+                                            ₹{{ item.discounted_price }}
+                                        {% else %}
+                                            ₹{{ item.product.price }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>
+                                        {% if item.discounted_total %}
+                                            ₹{{ item.discounted_total }}
+                                        {% else %}
+                                            ₹{{ item.get_total }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right"><strong>Total Amount:</strong></td>
+                                    <td><strong style="color: #ffbe33; font-size: 1.2rem;">₹{{ cart_total }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button id="pay-btn" class="btn-yellow">Pay Now</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Razorpay Payment Form -->
+<form action="{{ callback_url }}" method="POST" id="payment-form">
+    {% csrf_token %}
+    <input type="hidden" name="razorpay_order_id" value="{{ razorpay_order_id }}">
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+    <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+</form>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ razorpay_merchant_key }}", 
+        "amount": "{{ razorpay_amount }}", 
+        "currency": "{{ currency }}",
+        "name": "Hotel Ganaraj",
+        "description": "Order Payment",
+        "image": "{% static 'images/favicon.png' %}",
+        "order_id": "{{ razorpay_order_id }}", 
+        "handler": function (response){
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('razorpay_signature').value = response.razorpay_signature;
+            document.getElementById('payment-form').submit();
+        },
+        "prefill": {
+            "name": "{{ request.user.customer.name }}",
+            "email": "{{ request.user.email }}",
+            "contact": "{{ request.user.customer.phone }}"
+        },
+        "theme": {
+            "color": "#ffbe33"
+        }
+    };
+    
+    document.getElementById('pay-btn').onclick = function(e){
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
+
+{% include 'footer.html' %}

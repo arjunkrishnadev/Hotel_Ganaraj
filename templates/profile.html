@@ -1,0 +1,152 @@
+{% load static %}
+{% include 'header.html' %}
+
+<section class="user_profile_section layout_padding">
+    <div class="container">
+        <div class="heading_container heading_center">
+            <h2>
+                My Profile
+            </h2>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="margin-top: 20px;">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="form_container" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(15px); padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 12px 30px rgba(0,0,0,0.4); color: #fff; margin-top: 30px;">
+                    
+                    <div class="profile-img-wrapper text-center mb-4">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin: 0 auto; border: 5px solid #ffbe33; box-shadow: 0 0 15px rgba(255,190,51,0.6);">
+                            {% if customer.image %}
+                            <img src="{{ customer.image.url }}" alt="Profile Image" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                            <img src="{% static 'images/akhilesh.jpg' %}" alt="Default Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name" style="color: #ffbe33; font-weight: 600;">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ customer.name }}" placeholder="Enter your name" style="border-radius: 30px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="email" style="color: #ffbe33; font-weight: 600;">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ customer.email }}" placeholder="Enter your email" style="border-radius: 30px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" style="color: #ffbe33; font-weight: 600;">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" value="{{ customer.phone|default:'' }}" placeholder="Enter your phone number" style="border-radius: 30px;">
+                        </div>
+                        <div class="form-group">
+                        <div class="form-group">
+                            <label style="color: #ffbe33; font-weight: 600;">Address Details</label>
+                            <button type="button" onclick="getLocation()" class="btn btn-sm btn-info float-right" style="border-radius: 20px;">
+                                <i class="fa fa-map-marker" aria-hidden="true"></i> Use My Current Location
+                            </button>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="address_line">Address (Road/Area)</label>
+                                <input type="text" class="form-control" id="address_line" name="address_line" value="{{ address_line }}" placeholder="Road name, Area, etc." style="border-radius: 30px;">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="city">City</label>
+                                <input type="text" class="form-control" id="city" name="city" value="{{ city }}" placeholder="City" style="border-radius: 30px;">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="state">State</label>
+                                <input type="text" class="form-control" id="state" name="state" value="{{ state }}" placeholder="State" style="border-radius: 30px;">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="pincode">Pincode</label>
+                                <input type="text" class="form-control" id="pincode" name="pincode" value="{{ pincode }}" placeholder="Pincode" style="border-radius: 30px;">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="country">Country</label>
+                                <input type="text" class="form-control" id="country" name="country" value="{{ country }}" placeholder="Country" style="border-radius: 30px;">
+                            </div>
+                        </div>
+
+                        <div id="location-status" class="text-warning mb-3"></div>
+
+                        <script>
+                        function getLocation() {
+                            const status = document.getElementById('location-status');
+                            
+                            if (!navigator.geolocation) {
+                                status.textContent = "Geolocation is not supported by your browser";
+                                return;
+                            }
+
+                            status.textContent = "Locating...";
+
+                            navigator.geolocation.getCurrentPosition(success, error);
+
+                            function success(position) {
+                                const lat = position.coords.latitude;
+                                const lon = position.coords.longitude;
+                                status.textContent = "Fetching address...";
+
+                                fetch(`/get_location/?lat=${lat}&lon=${lon}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.error) {
+                                        status.textContent = "Error: " + data.error;
+                                    } else {
+                                        document.getElementById('address_line').value = data.road || '';
+                                        document.getElementById('city').value = data.city || '';
+                                        document.getElementById('state').value = data.state || '';
+                                        document.getElementById('pincode').value = data.postcode || '';
+                                        document.getElementById('country').value = data.country || '';
+                                        status.textContent = "Location found!";
+                                        setTimeout(() => status.textContent = '', 3000);
+                                    }
+                                })
+                                .catch(err => {
+                                    status.textContent = "Unable to retrieve address details.";
+                                    console.error(err);
+                                });
+                            }
+
+                            function error() {
+                                status.textContent = "Unable to retrieve your location. Please check browser permissions.";
+                            }
+                        }
+                        </script>
+                        <div class="form-group">
+                            <label for="image" style="color: #ffbe33; font-weight: 600;">Profile Image</label>
+                            <input type="file" class="form-control-file" id="image" name="image" style="color: #fff;">
+                        </div>
+
+                        <div class="btn_box text-center mt-4">
+                            <button type="submit" style="background-color: #ffbe33; color: #000; border: none; padding: 12px 45px; border-radius: 45px; font-weight: 600; text-transform: uppercase; transition: 0.3s;">
+                                Update Profile
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                         <a href="{% url 'logout' %}" style="color: #ff4b4b; font-weight: 600;">Logout</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}

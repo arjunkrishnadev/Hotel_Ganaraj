@@ -1,0 +1,57 @@
+
+{% load static %}
+{% include 'header.html' %}
+
+<!-- user register section -->
+<section class="login_section">
+  <div class="login_bg"></div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      
+      <div class="col-md-5">
+        <div class="login_card">
+
+          <div class="login_logo">
+            <span>Hotel Ganaraj</span>
+          </div>
+
+          <h3 class="login_title">Create Account</h3>
+          <p class="login_subtitle">Join us and start your culinary journey</p>
+
+          <form action="" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group mb-4">
+              <label class="login_label">Username</label>
+              <input type="text" name="username" class="form-control login_input" placeholder="Enter your username" required>
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="login_label">Email</label>
+              <input type="email" name="email" class="form-control login_input" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="login_label">Password</label>
+              <input type="password" name="password" class="form-control login_input" placeholder="Create a password" required>
+            </div>
+
+            <button type="submit" class="login_btn">Register</button>
+
+            <p class="login_register mt-3">
+              Already have an account? <a href="{% url 'login' %}">Login here</a>
+            </p>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+<!-- end user register section -->
+
+{% include 'footer.html' %}

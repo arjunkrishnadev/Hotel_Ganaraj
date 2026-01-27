@@ -1,0 +1,54 @@
+{% load static %}
+{% include 'header.html' %}
+
+<section class="about_section layout_padding">
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <!-- Logo / Image -->
+            <div class="col-md-5">
+                <div class="about_img_container">
+                    <div class="about_img_bg"></div>
+                    <img src="{% static 'images/logo2gn.png' %}" alt="Hotel Ganaraj Logo" class="about_logo">
+                </div>
+            </div>
+
+            <!-- Text -->
+            <div class="col-md-7">
+                <div class="about_text_container">
+
+                    <h2 class="about_title">Hotel Ganaraj</h2>
+
+                    <p class="about_description">
+                        For over three decades, Hotel Ganaraj has been a symbol of authentic Kerala taste —
+                        where every dish is prepared with tradition, purity, and the warmth of homely cooking.
+                        From our signature Kerala meals to our special chicken varieties, we bring you the 
+                        perfect blend of flavour, quality, and satisfaction.
+                    </p>
+
+                    <div class="about_highlights">
+                        <div class="highlight_item">
+                            <span class="highlight_icon">⭐</span>
+                            33+ Years of Trusted Service
+                        </div>
+                        <div class="highlight_item">
+                            <span class="highlight_icon">🍽️</span>
+                            Authentic Kerala Cuisine
+                        </div>
+                        <div class="highlight_item">
+                            <span class="highlight_icon">🔥</span>
+                            Freshly Cooked Every Day
+                        </div>
+                    </div>
+
+                    <a href="#" class="about_btn">Explore More</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% include 'footer.html' %}

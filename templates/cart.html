@@ -1,0 +1,118 @@
+{% load static %} {% include 'header.html' %}
+{% if messages %}
+<div id="popup-alert" class="popup-alert">
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+</div>
+<script>
+    setTimeout(() => {
+        document.getElementById('popup-alert').style.opacity = "0";
+    }, 2500);
+</script>
+{% endif %}
+
+
+
+
+
+<section class="cart_section page_section">
+  <div class="cart_bg"></div>
+
+  <div class="container">
+    <div class="heading_container heading_center">
+      <h2>Your Cart</h2>
+    </div>
+
+    <div class="glass_card cart_summary">
+      <a class="btn-yellow-outline" href="{% url 'menu' %}">
+        &#x2190; Continue Shopping
+      </a>
+
+      <table class="cart_summary_table">
+        <tr>
+          <td>
+            <h5>Items: <strong>{{ order.get_cart_items }}</strong></h5>
+          </td>
+          <td>
+            <h5>Total: <strong>{{ cart_total }} rs</strong></h5>
+          </td>
+          <td>
+            <a class="btn-yellow" href="{% url 'checkout' %}" style="float: right">Checkout</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="glass_card cart_items_table">
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>
+              <img src="{{ item.product.image.url }}" class="cart_img" />
+            </td>
+
+            <td>{{ item.product.name }}</td>
+
+            <td>
+              {% if item.discounted_price %}
+              <span style="color: #28a745; font-weight: bold">
+                ₹{{ item.discounted_price }}
+              </span>
+              <br />
+              <del style="color: #999; font-size: 14px">
+                ₹{{ item.product.price }}
+              </del>
+              <br />
+              <span class="badge bg-warning"
+                >{{ item.discount_percent }}% OFF</span
+              >
+              {% else %} ₹{{ item.product.price }} {% endif %}
+            </td>
+
+            <td class="qty_cell">
+              <span>{{ item.quantity }}</span>
+
+              <button
+                data-product="{{ item.product.id }}"
+                data-action="add"
+                class="qty_btn qty_plus update-cart"
+              >
+                +
+              </button>
+
+              <button
+                data-product="{{ item.product.id }}"
+                data-action="remove"
+                class="qty_btn qty_minus update-cart"
+              >
+                -
+              </button>
+            </td>
+
+            <td>
+              {% if item.discounted_total %}
+              <strong>₹{{ item.discounted_total }}</strong>
+              {% else %} ₹{{ item.get_total }} {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{% include 'footer.html' %}
+<script src="{% static 'js/cart.js' %}"></script>
